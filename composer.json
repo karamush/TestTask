@@ -13,7 +13,8 @@
   "require": {
     "php": "^7.0",
     "colshrapnel/safemysql": "1.0.0",
-    "ext-gettext": "*"
+    "ext-gettext": "*",
+    "twig/twig": "^2.0"
   },
   "autoload": {
     "classmap": ["src/lib/"]
