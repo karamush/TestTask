@@ -1,0 +1,21 @@
+{
+  "name": "karamush/test_auth_task",
+  "description": "Форма регистрации/авторизации и страница профиля, реализованные средствами PHP, MySQL и JS",
+  "minimum-stability": "dev",
+  "version": "0.1.0",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "karamush",
+      "email": "zbcdefgh@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.0",
+    "colshrapnel/safemysql": "1.0.0",
+    "ext-gettext": "*"
+  },
+  "autoload": {
+    "classmap": ["src/lib/"]
+  }
+}
