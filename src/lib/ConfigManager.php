@@ -14,6 +14,7 @@
 
 class ConfigManager {
     protected $configs = []; // тут будет храниться массив с настройками
+    protected $dev_loaded = false; // устанавливается в true, если была произведена загрузка DEV-настроек
 
     /**
      * Загрузить настройки из указанного файла.
@@ -45,14 +46,13 @@ class ConfigManager {
         }
 
         // попытка загрузить dev-настройки
-        $dev_loaded = false;
         if ($use_dev && $cfg = $this->loadFromFile($directory . DIRECTORY_SEPARATOR . 'config_dev.php')) {
             $this->configs = array_merge($this->configs, $cfg);
-            $dev_loaded = true;
+            $this->dev_loaded = true;
         }
 
         // попытка загрузить prod-настройки
-        if (!$dev_loaded && $cfg = $this->loadFromFile($directory . DIRECTORY_SEPARATOR . 'config_prod.php')) {
+        if (!$this->dev_loaded && $cfg = $this->loadFromFile($directory . DIRECTORY_SEPARATOR . 'config_prod.php')) {
             $this->configs = array_merge($this->configs, $cfg);
         }
     }
@@ -81,6 +81,14 @@ class ConfigManager {
      */
     function getAll() {
         return $this->configs;
+    }
+
+    /**
+     * Загружены ли DEV-настройки?
+     * @return bool
+     */
+    function devMode() {
+        return $this->dev_loaded;
     }
 
 }
