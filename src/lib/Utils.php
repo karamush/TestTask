@@ -91,4 +91,23 @@ class Utils {
         return isset($arr[$key]) ? $arr[$key] : $default_value;
     }
 
+    /**
+     * Получить "g-recaptcha-response" от пользователя
+     * @return string
+     */
+    static function getRecaptchaResponse() {
+        return self::POST('g-recaptcha-response');
+    }
+
+    /**
+     * Проверить рекаптчу
+     * @param $user_response -- "g-recaptcha-response", что приходит от пользователя
+     * @param $secret_key    -- секретный ключ recaptcha
+     * @return \ReCaptcha\Response
+     */
+    static function CheckRecaptcha($user_response, $secret_key) {
+        $r = new \ReCaptcha\ReCaptcha($secret_key);
+        return $r->verify($user_response, self::GetIP());
+    }
+
 }
