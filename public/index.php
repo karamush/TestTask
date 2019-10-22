@@ -21,8 +21,13 @@ if ($uri == '' || $path == '' || !preg_match('/^[a-zA-Z0-9_-]*$/', $route)) {
     $route = 'index';
 }
 $route_file = $routes_dir . $route . '.php';
+
+/* некоторые глобальные переменные для шаблонизатора */
+getTwig()->addGlobal('ROUTE', $route);
+getTwig()->addGlobal('PATH', $path);
+
 // если есть такой файл маршрута, то подключить его и исполнить
-if (file_exists($routes_dir . $route . '.php')) {
+if (file_exists($route_file)) {
     require $route_file;
 } else { // если маршрута такого нет, то выдать 404
     header("HTTP/1.0 404 Not Found");

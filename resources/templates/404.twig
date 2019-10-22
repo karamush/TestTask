@@ -1,0 +1,13 @@
+{% extends 'layout.twig' %}
+
+{% block title %}{{ lang.page_404_title }}{% endblock %}
+
+{% block content %}
+    {% include "langs/#{current_lang}/404_text.twig" %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block css %}
+{% endblock %}

@@ -14,7 +14,9 @@
     "php": "^7.0",
     "colshrapnel/safemysql": "1.0.0",
     "ext-gettext": "*",
-    "twig/twig": "^2.0"
+    "twig/twig": "^2.0",
+    "google/recaptcha": "1.2.3",
+    "claviska/simpleimage": "3.3.4"
   },
   "autoload": {
     "classmap": ["src/lib/"]

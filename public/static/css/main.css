@@ -1,0 +1,8 @@
+#main_content {
+    /*  чтоб navbar не перекрывал контент */
+    margin-top: 62px;
+}
+
+.center {
+    margin: auto;
+}

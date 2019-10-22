@@ -8,4 +8,14 @@
 
 return [
     'project_title' => 'Super Service',
+    'db' => [
+        'host' => 'localhost',
+        'user' => '',
+        'pass' => '',
+        'db' => '',
+        'charset' => 'utf8mb4'
+    ],
+    'use_recaptcha' => false,
+    'recaptcha_site_key' => '',
+    'recaptcha_secret_key' => ''
 ];
