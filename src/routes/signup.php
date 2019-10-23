@@ -17,13 +17,9 @@ if (Utils::isPost()) {
 
         case 'check_email': { // проверка существования email
                 echo getDB()->user_email_exists(Utils::POST('email')) ? '1' : '0';
-            }
-            break;
+            } break;
 
-        case 'register': {
-                register();
-            }
-            break;
+        case 'register': register(); break;
     }
 
     exit(0);
@@ -31,7 +27,6 @@ if (Utils::isPost()) {
 
 // дошли до этого места, значит, это просто GET, значит, вывести страницу
 render('sign_up');
-
 
 
 /* handlers */
@@ -86,33 +81,14 @@ function register() {
     }
 
     // Раз дошли до сюды, то теперь непосредственно сохранение изображения и сохранение пользователя в базу!
-    $img_dir = __DIR__ . '/../../public/res/avatars/';
     try {
-        $si = new \claviska\SimpleImage();
-        // приём изображения с помощью SimpleImage, а заодно проверка на валидность изображения!
-        $si->fromDataUri($user_avatar); // картинку получить из dataURI от canvas-а кропнутого
-
-        // создание директории для аватарок, если её нет
-        if (!is_dir($img_dir)) {
-            mkdir($img_dir, 0777, true);
-        }
-
-        // если слишком большое изображение пришло и если включено автоизменение размера
-        $max_width = (int)getCfgValue('max_image_width', 1024);
-        if (getCfgValue('auto_resize_image') && $si->getWidth() > $max_width) {
-            $si->resize($max_width); // пропорциональное изменение размера изображения до указанной ширины
-        }
-
-        // сформировать имя файла -- md5 от текущего времени + расширение файла из MimeType
-        $img_file = md5(time()) . '.' . explode('/', $si->getMimeType())[1];
-        $si->toFile($img_dir . $img_file); // сохранение изображения в файл
+        $avatar_url = saveAvatarImageFromDataURI($user_avatar);
     } catch (Exception $e) {
         Utils::addWarning(sprintf(__('save_image_error'), $e->getMessage()));
         render('sign_up');
         return;
     }
 
-    $avatar_url = '/res/avatars/' . $img_file; // формирование части URL аватарки (путь относительный)
     $password = password_hash($password, PASSWORD_DEFAULT);
     /* Регистрация в базу! Ура! */
     if (getDB()->user_add($email, $password, $name, $surname, $avatar_url, time(), Utils::GetIP())) {

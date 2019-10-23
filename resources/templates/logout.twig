@@ -4,11 +4,14 @@
 
 {% block content %}
 
-    <form method="post">
-        <input type="hidden" name="act" value="logout">
-        <h4>{{ lang.logout_confirm }}</h4>
-        <button type="submit" class="btn btn-warning btn-sm">{{ lang.logout_confirm_button }}</button>
-    </form>
+    <div class="d-flex justify-content-center">
+        <form method="post" class="form-group">
+            <input type="hidden" name="act" value="logout">
+            <h4>{{ lang.logout_confirm }}</h4>
+            <button type="submit" class="btn btn-danger btn-sm">{{ lang.logout_confirm_button }}</button>
+            <a href="/" class="btn btn-primary btn-sm float-right">{{ lang.logout_lost_button }}</a>
+        </form>
+    </div>
 
 {% endblock %}
 
