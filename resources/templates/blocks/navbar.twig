@@ -32,7 +32,12 @@
             </li>
 
             {% if is_auth %}
-                кнопка с именем юзера
+                <li class="nav-item {% if ROUTE=='profile' %}active{% endif %}">
+                    <a class="nav-link" href="/profile"><i class="fa fa-user"></i> {{ lang.nav_profile }}</a>
+                </li>
+                <li class="nav-item {% if ROUTE=='logout' %}active{% endif %}">
+                    <a class="nav-link" href="/logout"><i class="fa fa-sign-out"></i> {{ lang.nav_logout }}</a>
+                </li>
             {% else %}
                 <li class="nav-item {% if ROUTE=='signin' %}active{% endif %}">
                     <a class="nav-link" href="/signin"><i class="fa fa-sign-in"></i> {{ lang.nav_signin }}</a>
