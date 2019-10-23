@@ -97,13 +97,14 @@ function register() {
     try {
         $si = new \claviska\SimpleImage();
         // приём изображения с помощью SimpleImage, а заодно проверка на валидность изображения!
-        $si->fromDataUri(Utils::POST('user_avatar')); // картинку получить из dataURI от canvas-а кропнутого
+        $si->fromDataUri($user_avatar); // картинку получить из dataURI от canvas-а кропнутого
 
         // создание директории для аватарок, если её нет
         if (!is_dir($img_dir)) {
             mkdir($img_dir, 0777, true);
         }
 
+        // если слишком большое изображение пришло и если включено автоизменение размера
         $max_width = (int)getCfgValue('max_image_width', 1024);
         if (getCfgValue('auto_resize_image') && $si->getWidth() > $max_width) {
             $si->resize($max_width); // пропорциональное изменение размера изображения до указанной ширины
@@ -118,8 +119,7 @@ function register() {
         return;
     }
 
-
-    $avatar_url = '/res/avatars/' . $img_file;
+    $avatar_url = '/res/avatars/' . $img_file; // формирование части URL аватарки (путь относительный)
     /* Регистрация в базу! Ура! */
     if (getDB()->user_add($email, password_hash($password, PASSWORD_DEFAULT), $name, $surname, $avatar_url, time(), Utils::GetIP())) {
         Utils::addInfo(__('register_success'));
