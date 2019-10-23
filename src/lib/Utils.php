@@ -102,12 +102,12 @@ class Utils {
     /**
      * Проверить рекаптчу
      * @param $user_response -- "g-recaptcha-response", что приходит от пользователя
-     * @param $secret_key    -- секретный ключ recaptcha
-     * @return \ReCaptcha\Response
+     * @param $secret_key -- секретный ключ recaptcha
+     * @return bool
      */
     static function CheckRecaptcha($user_response, $secret_key) {
         $r = new \ReCaptcha\ReCaptcha($secret_key);
-        return $r->verify($user_response, self::GetIP());
+        return $r->verify($user_response, self::GetIP())->isSuccess();
     }
 
 }

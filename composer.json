@@ -16,7 +16,8 @@
     "ext-gettext": "*",
     "twig/twig": "^2.0",
     "google/recaptcha": "1.2.3",
-    "claviska/simpleimage": "3.3.4"
+    "claviska/simpleimage": "3.3.4",
+    "ext-json": "*"
   },
   "autoload": {
     "classmap": ["src/lib/"]

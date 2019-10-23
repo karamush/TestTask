@@ -20,8 +20,9 @@
                                 <label for="form_name">{{ lang.auth_firstname }} *</label>
                                 <input id="form_name" type="text" name="name" class="form-control"
                                        placeholder="{{ lang.auth_firstname_placeholder }} *" required="required"
-                                       data-error="{{ lang.auth_firstname_dataerror }}" autocomplete="firstname">
-                                <div class="help-block with-errors"></div>
+                                       data-error="{{ lang.auth_firstname_dataerror }}" autocomplete="firstname"
+                                       value="{{ POST.name }}">
+                                <div class="help-block "></div>
                             </div>
                         </div>
 
@@ -31,8 +32,9 @@
                                 <label for="form_lastname">{{ lang.auth_lastname }} *</label>
                                 <input id="form_lastname" type="text" name="surname" class="form-control"
                                        placeholder="{{ lang.auth_lastname_placeholder }} *" required="required"
-                                       data-error="{{ lang.auth_lastname_dataerror }}" autocomplete="surname">
-                                <div class="help-block with-errors"></div>
+                                       data-error="{{ lang.auth_lastname_dataerror }}" autocomplete="surname"
+                                       value="{{ POST.surname }}">
+                                <div class="help-block "></div>
                             </div>
                         </div>
                     </div>
@@ -43,10 +45,10 @@
                             <div class="form-group">
                                 <label for="form_password">{{ lang.auth_password }} *</label>
                                 <input type="password" id="form_password"
-                                       placeholder="{{ lang.auth_password_placeholder }}" name="password"
+                                       placeholder="{{ lang.auth_password_placeholder }}" name="password" minlength="8"
                                        data-error="{{ lang.auth_password_dataerror }}" autocomplete="new-password"
                                        class="form-control" required="required">
-                                <div class="help-block with-errors"></div>
+                                <div class="help-block "></div>
                             </div>
                         </div>
 
@@ -55,11 +57,11 @@
                                 <label for="form_password_confirm">{{ lang.auth_password_confirm }} *</label>
                                 <input type="password" id="form_password_confirm"
                                        placeholder="{{ lang.auth_password_confirm_placeholder }}"
-                                       name="password_confirm"
+                                       name="password_confirm" minlength="8"
                                        data-error="{{ lang.auth_password_confirm_dataerror }}"
                                        autocomplete="new-password-confirm"
                                        class="form-control" required="required">
-                                <div class="help-block with-errors"></div>
+                                <div class="help-block "></div>
                             </div>
                         </div>
                     </div>
@@ -71,8 +73,9 @@
                                 <label for="form_email">{{ lang.auth_email }} *</label>
                                 <input id="form_email" type="email" name="email" class="form-control"
                                        placeholder="{{ lang.auth_email_placeholder }} *" required="required"
-                                       data-error="{{ lang.auth_email_dataerror }}" autocomplete="email">
-                                <div class="help-block with-errors"></div>
+                                       data-error="{{ lang.auth_email_dataerror }}" autocomplete="email"
+                                       value="{{ POST.email }}">
+                                <div class="help-block"></div>
                             </div>
                         </div>
 
@@ -83,15 +86,11 @@
                                        data-rechoice-text="{{ lang.auth_user_avatar_rechoiche }}">
                                     {{ lang.auth_user_avatar_choice }}</label>
                                 <input type="file" id="form_avatar" class="custom-file-input"
-                                       accept="image/x-png,image/gif,image/jpeg">
-                                <div class="help-block with-errors"></div>
+                                       accept="image/x-png,image/gif,image/jpeg" required="required">
+                                <div class="help-block"></div>
                             </div>
                         </div>
                     </div>
-
-                    <img src="" title="Avatar preview" class="img-thumbnail float-right" id="form_avatar_preview"
-                         alt="Avatar preview..."
-                         style="display: none; max-height: 100px;">
 
                     <div class="row">
                         {% if cfg.use_recaptcha %}
@@ -109,6 +108,8 @@
                                 <i class="fa fa-check"></i>
                                 {{ lang.auth_btn_register }}
                             </button>
+                        </div>
+                        <div class="col-md-6">
                             <button type="reset" class="btn btn-sm btn-success btn-reset">
                                 <i class="fa fa-repeat"></i>
                                 {{ lang.auth_btn_reset }}
@@ -118,7 +119,8 @@
                 </div>
 
                 {# поле для хранения DataURL кропнутой картинки пользователя #}
-                <input type="hidden" id="user_avatar_image_data" name="user_avatar">
+                <input type="hidden" id="user_avatar_image_data" name="user_avatar" value="{{ POST.user_avatar }}">
+                <input type="hidden" name="act" value="register">
             </form>
         </div>
     </div>
@@ -140,7 +142,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success btn-sm" data-dismiss="modal"
-                            id="btn_image_crop"><i class="fa fa-scissors"></i> {{ lang.modal_image_cropper_btn_crop|default('Cut!') }}
+                            id="btn_image_crop"><i
+                                class="fa fa-scissors"></i> {{ lang.modal_image_cropper_btn_crop|default('Cut!') }}
                     </button>
                 </div>
             </div>
@@ -158,8 +161,6 @@
     <script>
         {# Документ полностью загружен #}
         $(document).ready(function () {
-            let cropBoxData;
-            let canvasData;
             let cropper;
 
             // при выборе файла изображения обрезать его!
@@ -186,14 +187,9 @@
             // инициализация cropper-а при открытии модального окна для обрезки изображения
             $('#modal_cropper').on('shown.bs.modal', function () {
                 cropper = new Cropper(document.getElementById('cropper_image'), {
-                    viewMode: 1,
-                    ready: function () {
-                        cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
-                    }
+                    viewMode: 1
                 });
             }).on('hidden.bs.modal', function () {
-                cropBoxData = cropper.getCropBoxData();
-                canvasData = cropper.getCanvasData();
                 $('#user_avatar_image_data').val(cropper.getCroppedCanvas().toDataURL());
                 cropper.destroy();
             });
@@ -201,6 +197,114 @@
             // кнопка на модальном окне обрезки изображения
             $('#btn_image_crop').click(function () {
 
+            });
+
+            /* проверки формы! */
+
+            /**
+             * Функция проверки формата email
+             */
+            function validateEmail(email) {
+                let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            /**
+             * Вывод сообщения ошибки под указанным элементом
+             **/
+            function printElementDataError(element, data_error_message) {
+                if (!element) return;
+                data_error_message = data_error_message || element.attr('data-error');
+                element.closest('.form-group').find('.help-block').removeClass('text-danger').
+                                removeClass('text-success').addClass('text-danger').text(data_error_message);
+            }
+
+            /**
+             * Очистить класс ошибки или успеха и сообщение убрать под элементом
+             */
+            function clearElementDataError(element) {
+                element.closest('.form-group').find('.help-block').removeClass('text-danger').removeClass('text-success').text('');
+            }
+
+            /**
+             * Вывод сообщения успеха под указанным элементом
+             */
+            function printElementDataOK(element, data_ok_message) {
+                if (!element || !data_ok_message) return;
+                element.closest('.form-group').find('.help-block').removeClass('text-danger').
+                removeClass('text-success').addClass('text-success').text(data_ok_message);
+            }
+
+            // проверка существования email!
+            function checkEmail() {
+                // self request
+                let email_input = $('#form_email');
+                if (!validateEmail(email_input.val())) {
+                    printElementDataError(email_input);
+                    return; // выйти, пока не будет нормальный формат email-а
+                }
+                // запрос проверки занятости email-а
+                $.post('', { act: "check_email", email: email_input.val() }, function (response) {
+                    if (response === '1') {
+                        printElementDataError(email_input, '{{ lang.auth_email_exists }}');
+                    } else {
+                        printElementDataOK(email_input, '{{ lang.auth_email_free }}');
+                    }
+                });
+            }
+
+            // при потере фокуса или при изменении сразу же можно проверить email
+            $('#form_email').focusout(checkEmail);
+            $('#form_name,#form_lastname').focusout(function() {
+                let field = $(this);
+                if (field.val().trim().length < 2) { // ладно, двухбуквенные имена существуют (типа Ян)
+                    printElementDataError(field);
+                } else {
+                    clearElementDataError(field);
+                }
+            });
+
+            function checkPasswordsMath() {
+                let confirm_field = $('#form_password_confirm');
+                if ($('#form_password').val() !== confirm_field.val()) {
+                    printElementDataError(confirm_field);
+                } else {
+                    clearElementDataError(confirm_field);
+                }
+            }
+
+            $('#form_password').focusout(function () {
+               let field = $(this);
+                if (field.val().trim().length < 8) {
+                    printElementDataError(field);
+                } else {
+                    clearElementDataError(field);
+                }
+                checkPasswordsMath();
+            });
+
+            $('#form_password_confirm').focusout(checkPasswordsMath);
+
+            /* валидация формы перед отправкой (ручная почти, да) */
+
+            $('#form-signup').on('submit', function () {
+                // поиск элементов с text-danger, где есть проблемы какие-то.
+                let problem_inputs = $('input[required]').closest('.form-group').find('.text-danger');
+                if (problem_inputs.length > 0) { // если есть хоть одно проблемное поле, то остановиться и в фокус его!
+                    let problem_field = $(problem_inputs[0]);
+                    problem_field.removeClass('text-danger').addClass('text-warning');
+                    let first_field = problem_field.closest('.form-group').find('input');
+                    first_field.focus();
+                    return false;
+                }
+
+                // дополнительная проверка на наличие изображения
+                if ($('#user_avatar_image_data').val().trim() === '') {
+                    alert('{{ lang.auth_user_avatar_error }}');
+                    return false;
+                }
+
+                return true;
             });
 
         });
