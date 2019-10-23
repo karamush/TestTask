@@ -6,6 +6,8 @@
  * Time: 12:38
  */
 
+session_start();
+
 require __DIR__ . '/../bootstrap/app.php';
 
 /* Mini auto router */

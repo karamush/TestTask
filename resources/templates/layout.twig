@@ -34,6 +34,52 @@
         {% include 'blocks/navbar.twig' %}
     {% endif %}
     <main role="main" class="container" id="main_content">
+        {# вывод flash-сообщений #}
+        <div id="statuses">
+            {% if errors is defined %}
+                {% for error in errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>{{ error.caption }}</strong> {{ error.text }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if warnings is defined %}
+                {% for warning in warnings %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>{{ warning.caption }}</strong> {{ warning.text }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if infos is defined %}
+                {% for info in infos  %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>{{ info.caption }}</strong> {{ info.text }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if successes is defined %}
+                {% for success in successes  %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>{{ success.caption }}</strong> {{ success.text }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div> {# /#statuses #}
         {% block content %}
             <h3>Content block!</h3>
         {% endblock %}

@@ -47,20 +47,19 @@ function getTwig() {
  */
 function render($template_name = 'index', array $variables = [], $result_return = false) {
     try {
-        /*
-        if (infosExists()) {
-            getTwig()->addGlobal('infos', getInfos());
+        // вывод flash-сообщений, если таковые имеются!
+        if (Utils::infosExists()) {
+            getTwig()->addGlobal('infos', Utils::getInfos());
         }
-        if (errorsExists()) {
-            getTwig()->addGlobal('errors', getErrors());
+        if (Utils::errorsExists()) {
+            getTwig()->addGlobal('errors', Utils::getErrors());
         }
-        if (warningsExists()) {
-            getTwig()->addGlobal('warnings', getWarnings());
+        if (Utils::warningsExists()) {
+            getTwig()->addGlobal('warnings', Utils::getWarnings());
         }
-        if (successesExists()) {
-            getTwig()->addGlobal('successes', getSuccesses());
+        if (Utils::successesExists()) {
+            getTwig()->addGlobal('successes', Utils::getSuccesses());
         }
-        */
 
         if (!file_exists(__getTplDir() . $template_name . '.twig'))
             $template_name = '404';

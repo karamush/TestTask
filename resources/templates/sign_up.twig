@@ -248,7 +248,8 @@
                     if (response === '1') {
                         printElementDataError(email_input, '{{ lang.auth_email_exists }}');
                     } else {
-                        printElementDataOK(email_input, '{{ lang.auth_email_free }}');
+                        {#printElementDataOK(email_input, '{{ lang.auth_email_free }}');#}
+                        clearElementDataError(email_input);
                     }
                 });
             }
@@ -303,6 +304,14 @@
                     alert('{{ lang.auth_user_avatar_error }}');
                     return false;
                 }
+
+                // проверка recapthca, точнее, просто проверка, что юзер поставил флажок
+                {% if cfg.use_recaptcha %}
+                    if (!grecaptcha.getResponse()) {
+                        alert('{{ lang.auth_recaptcha_warning }}');
+                        return false;
+                    }
+                {% endif %}
 
                 return true;
             });

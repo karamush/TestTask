@@ -17,7 +17,7 @@ $lang->loadLanguages();
 $lang->autoSetCurrentLanguage();
 
 // инициализация базы
-$db = new DBManager(GetCfgValue('db'));
+$db = new DBManager(getCfgValue('db'));
 
 // теперь можно проинициализировать шаблонизатор
 require __DIR__ . '/twig.php';
@@ -42,7 +42,7 @@ $twig->addGlobal('POST', $_POST);       // и POST-параметры тоже �
 /**
  * @return DBManager
  */
-function GetDB() {
+function getDB() {
     global $db;
     return $db;
 }
@@ -51,16 +51,43 @@ function GetDB() {
  * Получить менеджер переводов
  * @return LangManager|string
  */
-function GetLangManager() {
+function getLangManager() {
     global $lang;
     return $lang;
+}
+
+/**
+ * Получить значение строки, взятое из текущего перевода
+ * @param $str_name
+ * @return null
+ */
+function getLangStr($str_name) {
+    return getLangManager()->getString($str_name);
+}
+
+/**
+ * Alias for GetLangStr()
+ * @param $str_name
+ * @return null
+ */
+function langStr($str_name) {
+    return getLangStr($str_name);
+}
+
+/**
+ * Alias for GetLangStr()
+ * @param $str_name
+ * @return null
+ */
+function __($str_name) {
+    return getLangStr($str_name);
 }
 
 /**
  * Получить менеджер настроек
  * @return ConfigManager
  */
-function GetCfgManager() {
+function getCfgManager() {
     global $cfg;
     return $cfg;
 }
@@ -71,6 +98,6 @@ function GetCfgManager() {
  * @param null $default
  * @return mixed|null
  */
-function GetCfgValue($param, $default = null) {
-    return GetCfgManager()->get($param, $default);
+function getCfgValue($param, $default = null) {
+    return getCfgManager()->get($param, $default);
 }
