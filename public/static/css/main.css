@@ -6,3 +6,15 @@
 .center {
     margin: auto;
 }
+
+label {
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 7px;
+}
+
+.btn {
+    margin-right: 5px;
+}
