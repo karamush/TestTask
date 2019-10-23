@@ -139,7 +139,7 @@
             let cropper;
 
             // при выборе файла изображения обрезать его!
-            $("#form_avatar").change(function (e) {
+            let select_image = function (e) {
                 let img = e.target.files[0];
 
                 if (!img.type.match('image.*')) { // проверка формата файла, только изображения можно
@@ -149,29 +149,29 @@
 
                 let reader = new FileReader();
                 reader.onload = function (e) {
+                    if (cropper) // уничтожить кроппер, если он уже есть
+                        cropper.destroy();
+
                     $('#cropper_image').attr('src', e.target.result);
+                    cropper = new Cropper(document.getElementById('cropper_image'), {
+                        viewMode: 1
+                    });
                     $('#modal_cropper').modal();
                 };
                 reader.readAsDataURL(img); // попробовать считать изображение
                 // изменить описание поля выбора изображения
                 $('#form_avatar_choice').text($('#form_avatar_choice').attr('data-rechoice-text'));
                 return true;
+            };
+
+            // когда выбирается какой-то файл
+            $("#form_avatar").change(select_image).click(function () {
+               $(this).val(''); // при нажатии сбрасывать выбранный файл, чтоб кроппер снова мог нормально сработать для того же файла
             });
-
-
-            // инициализация cropper-а при открытии модального окна для обрезки изображения
-            $('#modal_cropper').on('shown.bs.modal', function () {
-                cropper = new Cropper(document.getElementById('cropper_image'), {
-                    viewMode: 1
-                });
-            }).on('hidden.bs.modal', function () {
-                $('#user_avatar_image_data').val(cropper.getCroppedCanvas().toDataURL());
-                cropper.destroy();
-            });
-
             // кнопка на модальном окне обрезки изображения
             $('#btn_image_crop').click(function () {
-
+                $('#user_avatar_image_data').val(cropper.getCroppedCanvas().toDataURL());
+                cropper.destroy();
             });
 
             /* проверки формы! */

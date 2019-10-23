@@ -9,7 +9,7 @@
         <div class="float-left img-thumbnail">
             <a href="{{ user.avatar }}" target="_blank" title="Open full size image in new tab">
                 <img class="rounded img-fluid" id="img_user_avatar" src="{{ user.avatar }}" alt="Avatar"
-                     style="max-height: 250px;">
+                     style="max-height: 300px; max-width: 360px;">
             </a>
             <div class="clearfix"></div>
             <button class="btn btn-sm btn-outline-dark form-control form-control-sm" id="btn_change_avatar"
@@ -97,29 +97,32 @@
 
                 let reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#cropper_image').attr('src', e.target.result);
-                    $('#modal_cropper').modal();
+                    if (cropper) // уничтожить кроппер, если он уже существует!
+                        cropper.destroy();
+
+                    $('#cropper_image').attr('src', e.target.result); // картинку загнать в модальное окошко
+                    cropper = new Cropper(document.getElementById('cropper_image'), { // инициализировать кроппер
+                        viewMode: 1
+                    });
+                    $('#modal_cropper').modal(); // показать модальку
                 };
                 reader.readAsDataURL(img); // попробовать считать изображение
                 return true;
             });
 
-
-            // инициализация cropper-а при открытии модального окна для обрезки изображения
-            $('#modal_cropper').on('shown.bs.modal', function () {
-                cropper = new Cropper(document.getElementById('cropper_image'), {
-                    viewMode: 1
-                });
-            }).on('hidden.bs.modal', function () {
+            // нажатие на кнопку "Crop" в модальном окне
+            $('#btn_image_crop').click(function () {
                 // загрузка изображения на сервер тут!
                 // кнопка будет отображать загрузку. так интересней!
                 let btn = $('#btn_change_avatar');
                 btn.data('original-text', btn.html());      // сохраняем текущий текст кнопки
                 btn.html(btn.attr('data-loading-text'));    // устанавливаем ей код загрузки
+                btn.attr('disabled', 'disabled').addClass('disabled');
 
                 // запрос к этому же скрипту текущему (/profile)
                 $.post('', {act: 'change_avatar', avatar_data: cropper.getCroppedCanvas().toDataURL()}, function(data) {
                     btn.html(btn.data('original-text')); // вернуть обычное состояние кнопки
+                    btn.removeAttr('disabled').removeClass('disabled');
                     if (data) {
                         // обновить изображение и ссылку на изображение!
                         $('#img_user_avatar').attr('src', data).closest('a').attr('href', data);
