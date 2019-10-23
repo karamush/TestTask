@@ -8,6 +8,7 @@
             <div class="text-center mb-4">
                 <img class="mb-4" src="/static/favicon/android-chrome-192x192.png" width="72" height="72" alt="Logo">
                 <h3 class="h3" style="margin-top: -30px;">{{ cfg.project_title }} - {{ lang.signup_title }}</h3>
+                <small>{{ lang.required_fields_info }}</small>
             </div>
 
             <form id="form-signup" method="post" role="form" enctype="multipart/form-data">
@@ -19,7 +20,7 @@
                             <div class="form-group">
                                 <label for="form_name">{{ lang.auth_firstname }} *</label>
                                 <input id="form_name" type="text" name="name" class="form-control"
-                                       placeholder="{{ lang.auth_firstname_placeholder }} *" required="required"
+                                       placeholder="{{ lang.auth_firstname_placeholder }}" required="required"
                                        data-error="{{ lang.auth_firstname_dataerror }}" autocomplete="firstname"
                                        value="{{ POST.name }}">
                                 <div class="help-block "></div>
@@ -31,7 +32,7 @@
                             <div class="form-group">
                                 <label for="form_lastname">{{ lang.auth_lastname }} *</label>
                                 <input id="form_lastname" type="text" name="surname" class="form-control"
-                                       placeholder="{{ lang.auth_lastname_placeholder }} *" required="required"
+                                       placeholder="{{ lang.auth_lastname_placeholder }}" required="required"
                                        data-error="{{ lang.auth_lastname_dataerror }}" autocomplete="surname"
                                        value="{{ POST.surname }}">
                                 <div class="help-block "></div>
@@ -72,7 +73,7 @@
                             <div class="form-group">
                                 <label for="form_email">{{ lang.auth_email }} *</label>
                                 <input id="form_email" type="email" name="email" class="form-control"
-                                       placeholder="{{ lang.auth_email_placeholder }} *" required="required"
+                                       placeholder="{{ lang.auth_email_placeholder }}" required="required"
                                        data-error="{{ lang.auth_email_dataerror }}" autocomplete="email"
                                        value="{{ POST.email }}">
                                 <div class="help-block"></div>
@@ -80,7 +81,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label>{{ lang.auth_user_avatar }}</label>
+                            <label>{{ lang.auth_user_avatar }} *</label>
                             <div class="form-group custom-file">
                                 <label class="custom-file-label" for="form_avatar" id="form_avatar_choice"
                                        data-rechoice-text="{{ lang.auth_user_avatar_rechoiche }}">
@@ -108,8 +109,6 @@
                                 <i class="fa fa-check"></i>
                                 {{ lang.auth_btn_register }}
                             </button>
-                        </div>
-                        <div class="col-md-6">
                             <button type="reset" class="btn btn-sm btn-success btn-reset">
                                 <i class="fa fa-repeat"></i>
                                 {{ lang.auth_btn_reset }}
