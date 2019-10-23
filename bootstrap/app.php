@@ -35,6 +35,12 @@ if ($cfg->get('use_recaptcha', false))
     $twig->addGlobal('RECAPTCHA_BLOCK', "<div class=\"g-recaptcha\" data-sitekey=\"{$cfg->get('recaptcha_site_key')}\"></div>");
 $twig->addGlobal('GET', $_GET);         // сделать GET-параметры доступными в шаблонах
 $twig->addGlobal('POST', $_POST);       // и POST-параметры тоже доступны будут в шаблонах
+$twig->addGlobal('is_auth', Utils::isAuth()); // передать в шаблоны флаг авторизации
+if (Utils::isAuth()) {
+    getDB()->user_update_last_time_ip(Utils::getUserID(), time(), Utils::GetIP()); // обновить время и адрес последнего запроса
+    $_SESSION['user'] = getDB()->user_get_by_id(Utils::getUserID()); // обновить информацию о пользователе в сессии
+    $twig->addGlobal('user', Utils::getArrayValue($_SESSION, 'user'));
+}
 
 
 /* функции-хелперы */
