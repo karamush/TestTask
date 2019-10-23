@@ -1,0 +1,137 @@
+{% extends 'layout.twig' %}
+
+{% block title %}{{ lang.profile_title }}{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-4">
+        <h3 class="h2">{{ lang.profile_title }}</h3>
+
+        <div class="float-left img-thumbnail">
+            <a href="{{ user.avatar }}" target="_blank" title="Open full size image in new tab">
+                <img class="rounded img-fluid" id="img_user_avatar" src="{{ user.avatar }}" alt="Avatar"
+                     style="max-height: 250px;">
+            </a>
+            <div class="clearfix"></div>
+            <button class="btn btn-sm btn-outline-dark form-control form-control-sm" id="btn_change_avatar"
+                    data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> {{ lang.loading }}...">
+                <i class="fa fa-image"></i> {{ lang.change_avatar }}</button>
+        </div>
+
+
+        <div class="table-responsive offset-md-4 col-md-8">
+            <table class="table table-hover table-sm">
+                <tbody>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_id }}:</td>
+                    <td class="text-left">{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_name }}:</td>
+                    <td class="text-left">{{ user.name }}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_surname }}:</td>
+                    <td class="text-left">{{ user.surname }}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_email }}:</td>
+                    <td class="text-left">{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_reg_time }}:</td>
+                    <td class="text-left">{{ user.reg_time|date('d.m.Y / H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_reg_ip }}:</td>
+                    <td class="text-left">{{ user.reg_ip|default('-') }}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_last_time }}:</td>
+                    <td class="text-left">{% if user.last_time %}{{ user.last_time|date('d.m.Y / H:i:s') }}{% else %}-{% endif %}</td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_last_ip }}:</td>
+                    <td class="text-left">{{ user.last_ip|default('-') }}</td>
+                </tr>
+                {#
+                <tr>
+                    <td class="font-weight-bold text-right">{{ lang.profile_info }}:</td>
+                    <td class="text-left">{{ user.info|default('-') }}</td>
+                </tr>
+                #}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {# скрытое поле для загрузки аватарки. #}
+    <div style="display: none;">
+        <input type="file" id="form_avatar" class="custom-file-input"
+               accept="image/x-png,image/gif,image/jpeg" required="required">
+    </div>
+
+    {# модальное окошко для обрезки изображений #}
+    {% include 'blocks/img_crop_modal.twig' %}
+{% endblock %}
+
+{% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.js"
+            integrity="sha256-EuV9YMxdV2Es4m9Q11L6t42ajVDj1x+6NZH4U1F+Jvw=" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#btn_change_avatar').click(function () {
+                $('#form_avatar').click();
+            });
+
+            let cropper;
+
+            // при выборе файла изображения обрезать его!
+            $("#form_avatar").change(function (e) {
+                let img = e.target.files[0];
+
+                if (!img.type.match('image.*')) { // проверка формата файла, только изображения можно
+                    alert("{{ lang.image_format_error }}");
+                    return;
+                }
+
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#cropper_image').attr('src', e.target.result);
+                    $('#modal_cropper').modal();
+                };
+                reader.readAsDataURL(img); // попробовать считать изображение
+                return true;
+            });
+
+
+            // инициализация cropper-а при открытии модального окна для обрезки изображения
+            $('#modal_cropper').on('shown.bs.modal', function () {
+                cropper = new Cropper(document.getElementById('cropper_image'), {
+                    viewMode: 1
+                });
+            }).on('hidden.bs.modal', function () {
+                // загрузка изображения на сервер тут!
+                // кнопка будет отображать загрузку. так интересней!
+                let btn = $('#btn_change_avatar');
+                btn.data('original-text', btn.html());      // сохраняем текущий текст кнопки
+                btn.html(btn.attr('data-loading-text'));    // устанавливаем ей код загрузки
+
+                // запрос к этому же скрипту текущему (/profile)
+                $.post('', {act: 'change_avatar', avatar_data: cropper.getCroppedCanvas().toDataURL()}, function(data) {
+                    btn.html(btn.data('original-text')); // вернуть обычное состояние кнопки
+                    if (data) {
+                        // обновить изображение и ссылку на изображение!
+                        $('#img_user_avatar').attr('src', data).closest('a').attr('href', data);
+                    }
+                });
+                cropper.destroy();
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.css"
+          integrity="sha256-cZDeXQ7c9XipzTtDgc7DML5txS3AkSj0sjGvWcdhfns=" crossorigin="anonymous"/>
+{% endblock %}
