@@ -208,4 +208,22 @@ class Utils {
         exit;
     }
 
+    /* авторизационные функции всякие */
+
+    /**
+     * Авторизован ли пользователь? (проверяет наличие пользователя в сессии)
+     * @return bool
+     */
+    static function isAuth() {
+        return self::getArrayValue($_SESSION, 'user', null) != null;
+    }
+
+    /**
+     * Получить id текущего залогиненого пользователя
+     * @return int|null
+     */
+    static function getUserID() {
+        return self::isAuth() ? self::getArrayValue($_SESSION, 'user')['id'] : null;
+    }
+
 }
