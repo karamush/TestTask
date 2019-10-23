@@ -17,11 +17,14 @@ $lang->loadLanguages();
 $lang->autoSetCurrentLanguage();
 
 // инициализация базы
-$db = new DBManager(getCfgValue('db'));
+$db = new DBManager($cfg->get('db'));
 
 // теперь можно проинициализировать шаблонизатор
 require __DIR__ . '/twig.php';
 twigInit($cfg->devMode());
+
+// а теперь можно подключить файл с дополнительными функциями (ай-ай-ай!)
+require __DIR__ . '/helpers.php';
 
 /* добавление некоторые глобальных переменных в шаблонизатор, в том числе настройки и строки перевода */
 $twig = getTwig();
@@ -40,70 +43,4 @@ if (Utils::isAuth()) {
     getDB()->user_update_last_time_ip(Utils::getUserID(), time(), Utils::GetIP()); // обновить время и адрес последнего запроса
     $_SESSION['user'] = getDB()->user_get_by_id(Utils::getUserID()); // обновить информацию о пользователе в сессии
     $twig->addGlobal('user', Utils::getArrayValue($_SESSION, 'user'));
-}
-
-
-/* функции-хелперы */
-
-/**
- * @return DBManager
- */
-function getDB() {
-    global $db;
-    return $db;
-}
-
-/**
- * Получить менеджер переводов
- * @return LangManager|string
- */
-function getLangManager() {
-    global $lang;
-    return $lang;
-}
-
-/**
- * Получить значение строки, взятое из текущего перевода
- * @param $str_name
- * @return null
- */
-function getLangStr($str_name) {
-    return getLangManager()->getString($str_name);
-}
-
-/**
- * Alias for GetLangStr()
- * @param $str_name
- * @return null
- */
-function langStr($str_name) {
-    return getLangStr($str_name);
-}
-
-/**
- * Alias for GetLangStr()
- * @param $str_name
- * @return null
- */
-function __($str_name) {
-    return getLangStr($str_name);
-}
-
-/**
- * Получить менеджер настроек
- * @return ConfigManager
- */
-function getCfgManager() {
-    global $cfg;
-    return $cfg;
-}
-
-/**
- * Получить значение указанного параметра
- * @param $param
- * @param null $default
- * @return mixed|null
- */
-function getCfgValue($param, $default = null) {
-    return getCfgManager()->get($param, $default);
 }
