@@ -37,6 +37,17 @@ class DBManager extends SafeMySQL {
     }
 
     /**
+     * Обновить время и IP последнего запроса указанного пользователя
+     * @param $user_id
+     * @param $time
+     * @param $ip
+     * @return bool
+     */
+    public function user_update_last_time_ip($user_id, $time, $ip) {
+        return !!$this->query('UPDATE users SET last_time=?i, last_ip=?s WHERE id=?i', $time, $ip, $user_id);
+    }
+
+    /**
      * Добавить нового пользователя!
      * @param $email
      * @param $hash_password
@@ -56,6 +67,40 @@ class DBManager extends SafeMySQL {
         return $this->insertId();
     }
 
+    public function user_avatar_update($user_id, $avatar_url) {
+        return !!$this->query('UPDATE users SET avatar=?s WHERE id=?i', $avatar_url, $user_id);
+    }
 
+    /* ip bans! ^^ */
+
+    /**
+     * Получить статус бана указанного IP (время и количество ошибок).
+     * @param $ip
+     * @return array
+     */
+    public function ip_ban_status($ip) {
+        return $this->getRow('SELECT * FROM ip_bans WHERE ip=?s', $ip);
+    }
+
+    /**
+     * Увеличить на единицу количество ошибок для указанного IP,
+     * сохранив также время последней ошибки.
+     * @param $ip
+     * @param $last_time
+     * @return bool
+     */
+    public function ip_inc_err($ip, $last_time) {
+        return !!$this->query('INSERT INTO ip_bans (ip, err_count, ban_time) VALUES(?s, 1, ?i) 
+                                ON DUPLICATE KEY UPDATE err_count = err_count + 1', $ip, $last_time);
+    }
+
+    /**
+     * Снять блокировку по IP
+     * @param $ip
+     * @return FALSE|resource
+     */
+    public function ip_unban($ip) {
+        return $this->query('DELETE FROM ip_bans WHERE ip=?s', $ip);
+    }
 
 }
