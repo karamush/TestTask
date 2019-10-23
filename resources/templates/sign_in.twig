@@ -3,13 +3,56 @@
 {% block title %}{{ lang.signin_title }}{% endblock %}
 
 {% block content %}
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="text-center mb-4">
+                <img class="mb-4" src="/static/favicon/android-chrome-192x192.png" width="72" height="72" alt="Logo">
+                <h3 class="h3" style="margin-top: -30px;">{{ cfg.project_title }} - {{ lang.signin_title }}</h3>
+            </div>
 
+            <form method="post">
+
+                <div class="form-group col-auto">
+                    <label for="form_email">{{ lang.auth_email }}</label>
+                    <input id="form_email" type="email" name="email" class="form-control" autocomplete="email"
+                           placeholder="{{ lang.signin_email_placeholder }}" required="required" value="{{ email }}">
+                    <div class="help-block"></div>
+                </div>
+
+                <div class="form-group col-auto">
+                    <label for="form_password">{{ lang.auth_password }}</label>
+                    <input type="password" id="form_password"
+                           placeholder="{{ lang.signin_password_placeholder }}" name="password" minlength="8"
+                           autocomplete="password" class="form-control" required="required">
+                    <div class="help-block "></div>
+                </div>
+
+                {% if cfg.use_recaptcha and need_recaptcha %}
+                    <div class="form-group col-auto">
+                        {{ RECAPTCHA_BLOCK|raw }}
+                    </div>
+                {% endif %}
+
+                <div class="form-group col-auto">
+                    <button class="form-control btn btn-sm btn-primary {% if not auth_allowed %}disabled{% endif %}"
+                            {% if not auth_allowed %}disabled{% endif %}>
+                        <i class="fa fa-key"></i> {{ lang.signin_button_login }}</button>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
 
 {% endblock %}
 
-{% block js %}
-{% endblock %}
+    {% block js %}
+        {% if cfg.use_recaptcha %}
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        {% endif %}
+    {% endblock %}
 
-{% block css %}
+    {% block css %}
 
-{% endblock %}
+    {% endblock %}
