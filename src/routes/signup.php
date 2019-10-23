@@ -5,6 +5,11 @@
  * Time: 10:38
  */
 
+if (Utils::isAuth()) { // уже авторизованы, перейти в профиль и написать гневное сообщение
+    Utils::addWarning(__('signup_already_logged_in'));
+    Utils::e_redirect('/profile');
+}
+
 // попытка регистрации, да?
 if (Utils::isPost()) {
 
@@ -32,16 +37,6 @@ render('sign_up');
 /* handlers */
 
 function register() {
-    /**
-     * [name] => name
-    [surname] => surname
-    [password] => 12345678
-    [password_confirm] => 12345678
-    [email] => zbcdefgh@gmail.com
-    [g-recaptcha-response
-    [user_avatar]
-     */
-
     $name = Utils::POST('name');
     $surname = Utils::POST('surname');
     $password = Utils::POST('password');
@@ -90,9 +85,7 @@ function register() {
         return;
     }
 
-
     // Раз дошли до сюды, то теперь непосредственно сохранение изображения и сохранение пользователя в базу!
-
     $img_dir = __DIR__ . '/../../public/res/avatars/';
     try {
         $si = new \claviska\SimpleImage();
@@ -120,8 +113,9 @@ function register() {
     }
 
     $avatar_url = '/res/avatars/' . $img_file; // формирование части URL аватарки (путь относительный)
+    $password = password_hash($password, PASSWORD_DEFAULT);
     /* Регистрация в базу! Ура! */
-    if (getDB()->user_add($email, password_hash($password, PASSWORD_DEFAULT), $name, $surname, $avatar_url, time(), Utils::GetIP())) {
+    if (getDB()->user_add($email, $password, $name, $surname, $avatar_url, time(), Utils::GetIP())) {
         Utils::addInfo(__('register_success'));
         Utils::e_redirect('/signin');
     } else {
