@@ -12,7 +12,6 @@
             </div>
 
             <form id="form-signup" method="post" role="form" enctype="multipart/form-data">
-                <div class="messages"></div>
                 <div class="controls">
                     <div class="row">
                         {# имя #}
@@ -124,30 +123,7 @@
         </div>
     </div>
 
-    <div class="modal" id="modal_cropper" aria-labelledby="modalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">{{ lang.modal_image_cropper_title }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="img-container">
-                        <img id="cropper_image" src="" title="Image for crop" alt="Picture" class="img-fluid">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-sm" data-dismiss="modal"
-                            id="btn_image_crop"><i
-                                class="fa fa-scissors"></i> {{ lang.modal_image_cropper_btn_crop|default('Cut!') }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'blocks/img_crop_modal.twig' %}
 {% endblock %}
 
 {% block js %}
@@ -323,17 +299,4 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.css"
           integrity="sha256-cZDeXQ7c9XipzTtDgc7DML5txS3AkSj0sjGvWcdhfns=" crossorigin="anonymous"/>
 
-    <style>
-        label {
-            margin-bottom: 0;
-        }
-
-        .form-group {
-            margin-bottom: 7px;
-        }
-
-        .btn {
-            margin-right: 5px;
-        }
-    </style>
 {% endblock %}
