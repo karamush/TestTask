@@ -108,7 +108,7 @@
                                 <i class="fa fa-check"></i>
                                 {{ lang.auth_btn_register }}
                             </button>
-                            <button type="reset" class="btn btn-sm btn-success btn-reset">
+                            <button type="reset" id="btn_reset_form" class="btn btn-sm btn-success btn-reset">
                                 <i class="fa fa-repeat"></i>
                                 {{ lang.auth_btn_reset }}
                             </button>
@@ -289,6 +289,13 @@
                 {% endif %}
 
                 return true;
+            });
+
+            /* очистка формы по кнопке RESET */
+
+            $('#btn_reset_form').click(function () {
+                grecaptcha.reset(); // сброс рекапчи!
+                $('input').val();   // очистка значений всех инпутов
             });
 
         });
