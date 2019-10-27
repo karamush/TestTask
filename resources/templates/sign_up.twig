@@ -190,7 +190,9 @@
             function printElementDataError(element, data_error_message) {
                 if (!element) return;
                 data_error_message = data_error_message || element.attr('data-error');
-                element.closest('.form-group').find('.help-block').removeClass('text-danger').
+                let group = element.closest('.form-group');
+                group.find('.form-control').addClass('is-invalid');
+                group.find('.help-block').removeClass('text-danger').
                                 removeClass('text-success').addClass('text-danger').text(data_error_message);
             }
 
@@ -198,15 +200,21 @@
              * Очистить класс ошибки или успеха и сообщение убрать под элементом
              */
             function clearElementDataError(element) {
-                element.closest('.form-group').find('.help-block').removeClass('text-danger').removeClass('text-success').text('');
+                let group = element.closest('.form-group');
+                group.find('.help-block').removeClass('text-danger').removeClass('text-success').text('');
+                group.find('.form-control').removeClass('is-valid').removeClass('is-invalid');
             }
 
             /**
              * Вывод сообщения успеха под указанным элементом
              */
             function printElementDataOK(element, data_ok_message) {
-                if (!element || !data_ok_message) return;
-                element.closest('.form-group').find('.help-block').removeClass('text-danger').
+                clearElementDataError(element);
+                if (!element) return;
+                data_ok_message = data_ok_message || "";
+                let group = element.closest('.form-group');
+                group.find('.form-control').addClass('is-valid');
+                group.find('.help-block').removeClass('text-danger').
                 removeClass('text-success').addClass('text-success').text(data_ok_message);
             }
 
@@ -223,8 +231,8 @@
                     if (response === '1') {
                         printElementDataError(email_input, '{{ lang.auth_email_exists }}');
                     } else {
-                        {#printElementDataOK(email_input, '{{ lang.auth_email_free }}');#}
-                        clearElementDataError(email_input);
+                        printElementDataOK(email_input, '{{ lang.auth_email_free }}');
+                        // printElementDataOK(email_input);
                     }
                 });
             }
@@ -236,7 +244,7 @@
                 if (field.val().trim().length < 2) { // ладно, двухбуквенные имена существуют (типа Ян)
                     printElementDataError(field);
                 } else {
-                    clearElementDataError(field);
+                    printElementDataOK(field);
                 }
             });
 
@@ -245,7 +253,7 @@
                 if ($('#form_password').val() !== confirm_field.val()) {
                     printElementDataError(confirm_field);
                 } else {
-                    clearElementDataError(confirm_field);
+                    printElementDataOK(confirm_field);
                 }
             }
 
@@ -254,7 +262,7 @@
                 if (field.val().trim().length < 8) {
                     printElementDataError(field);
                 } else {
-                    clearElementDataError(field);
+                    printElementDataOK(field);
                 }
                 checkPasswordsMath();
             });
