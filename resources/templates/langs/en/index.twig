@@ -1,3 +1,12 @@
-<h2>Main page!</h2>
+<h2>Home page</h2>
+{% if is_auth %}
+    <p>Hello, {{ user.name }}!</p>
+{% else %}
+    <p>Welcome to our site!</p>
+    <p>If you already have an account, you can <a href="/signin">authorize</a>.
+        In other way you can <a href="/signup">register</a> and become a user of our platform by giving us some information about yourself. Then you can log in.
+{% endif %}
 
-<p>Hello, {{ user.name }}!</p>
+<p>This site supports registration, authorization, uploading and editing avatars, languages switching.
+    There is an automatic router (you don't have to set routes manually), a good template engine, translate manager.</p>
+<p>You can check a source and detailed description in the following repository: <a href="https://github.com/karamush/TestTask" target="_blank">https://github.com/karamush/TestTask</a></p>
