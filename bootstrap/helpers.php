@@ -97,8 +97,8 @@ function saveAvatarImageFromDataURI($data_uri) {
         $si->resize($max_width); // пропорциональное изменение размера изображения до указанной ширины
     }
 
-    // сформировать имя файла -- md5 от текущего времени + расширение файла из MimeType
-    $img_file = md5(time()) . '.' . explode('/', $si->getMimeType())[1];
+    // сформировать имя файла -- md5 от текущего файла + расширение файла из MimeType
+    $img_file = md5($si->toDataUri()) . '.' . explode('/', $si->getMimeType())[1];
     $si->toFile($img_dir . $img_file); // сохранение изображения в файл
 
     return '/res/avatars/' . $img_file; // формирование части URL аватарки (путь относительный)
